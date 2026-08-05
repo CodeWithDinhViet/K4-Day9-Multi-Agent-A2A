@@ -22,6 +22,7 @@ def inspect_case(case_path: Path, repository: OlistRepository) -> None:
     bundle = coordinator.investigate(case)
     decision = coordinator.decide(bundle)
     output = build_output(bundle, decision)
+    coordinator.verify(output, bundle, decision)
     order = bundle.order_product.order
 
     print(f"case_id={case.case_id}")

@@ -5,6 +5,7 @@ from .agents.delivery_agent import DeliveryAgent
 from .agents.order_product_agent import OrderProductAgent
 from .agents.payment_agent import PaymentAgent
 from .agents.policy_agent import PolicyAgent
+from .agents.verifier_agent import VerifierAgent
 from .data_repository import OlistRepository
 from .models import CaseInput, InvestigationBundle
 
@@ -16,6 +17,7 @@ class InvestigationCoordinator:
         self.payment_agent = PaymentAgent(repository)
         self.delivery_agent = DeliveryAgent(repository)
         self.policy_agent = PolicyAgent()
+        self.verifier_agent = VerifierAgent(repository)
 
     def investigate(self, case: CaseInput) -> InvestigationBundle:
         order_id = case.claimed_order_id
@@ -29,3 +31,6 @@ class InvestigationCoordinator:
 
     def decide(self, bundle: InvestigationBundle):
         return self.policy_agent.decide(bundle)
+
+    def verify(self, output, bundle, decision) -> None:
+        self.verifier_agent.verify(output, bundle, decision)
