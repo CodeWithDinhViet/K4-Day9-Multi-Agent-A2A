@@ -6,11 +6,11 @@
 
 | Thông tin       | Nội dung     |
 | --------------- | ------------ |
-| Họ và tên       | [Họ và tên]  |
-| MSSV            | [MSSV]       |
+| Họ và tên       | [Lê Đình Việt]  |
+| MSSV            | [2A202601528]       |
 | Khóa/Lớp        | [K4]         |
-| Vai trò chính   | [Vai trò]    |
-| Ngày hoàn thành | [YYYY-MM-DD] |
+| Vai trò chính   | [Làm cá nhân]    |
+| Ngày hoàn thành | [5/8/2026] |
 
 ## 2. Vai trò và phạm vi công việc
 
