@@ -6,6 +6,7 @@ from typing import Sequence
 
 from .config import INPUT_DIR, POLICY_VERSION
 from .data_repository import OlistRepository, load_case
+from .orchestrator import InvestigationCoordinator
 
 
 def inspect_case(case_path: Path, repository: OlistRepository) -> None:
@@ -15,22 +16,21 @@ def inspect_case(case_path: Path, repository: OlistRepository) -> None:
             f"{case.case_id}: unsupported policy {case.policy_version!r}"
         )
 
-    order = repository.get_order(case.claimed_order_id)
-    if order is None:
-        raise ValueError(
-            f"{case.case_id}: order {case.claimed_order_id!r} was not found"
-        )
-
-    customer = repository.get_customer(order["customer_id"])
-    items = repository.get_order_items(case.claimed_order_id)
-    payments = repository.get_order_payments(case.claimed_order_id)
+    bundle = InvestigationCoordinator(repository).investigate(case)
+    order = bundle.order_product.order
 
     print(f"case_id={case.case_id}")
     print(f"order_id={case.claimed_order_id}")
     print(f"order_status={order['order_status']}")
-    print(f"customer_found={customer is not None}")
-    print(f"item_rows={len(items)}")
-    print(f"payment_rows={len(payments)}")
+    print(f"customer_unique_id={bundle.customer.customer_unique_id}")
+    print(f"related_orders={len(bundle.customer.related_order_ids)}")
+    print(f"item_rows={len(bundle.order_product.item_rows)}")
+    print(f"seller_count={len(bundle.order_product.seller_ids)}")
+    print(f"payment_rows={len(bundle.payment.payment_rows)}")
+    print(f"payment_total_brl={bundle.payment.payment_total_brl}")
+    print(f"reconciled={bundle.payment.reconciled}")
+    print(f"delivery_variance_hours={bundle.delivery.delivery_variance_hours}")
+    print(f"late_handoff_sellers={len(bundle.delivery.late_handoff_seller_ids)}")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -52,4 +52,3 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
