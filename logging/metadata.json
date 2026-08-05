@@ -1,0 +1,9 @@
+{
+  "model": "deterministic-python-rules",
+  "parameter_size": "not_applicable",
+  "framework": "custom Python multi-agent orchestration",
+  "runtime": "Python 3.10.4",
+  "policy_version": "EC_POLICY_V2",
+  "case_count": 50,
+  "generated_at": "2026-08-05T15:27:15+07:00"
+}
