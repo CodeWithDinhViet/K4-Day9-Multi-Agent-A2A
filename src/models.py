@@ -96,3 +96,20 @@ class InvestigationBundle:
     order_product: OrderProductAnalysis
     payment: PaymentAnalysis
     delivery: DeliveryAnalysis
+
+
+@dataclass(frozen=True)
+class ResponsibleParty:
+    party_type: str
+    party_id: str
+
+
+@dataclass(frozen=True)
+class PolicyDecision:
+    primary_issue: str
+    secondary_issues: List[str]
+    case_status: str
+    root_cause_code: str
+    responsible_parties: List[ResponsibleParty]
+    recommended_refund_brl: Decimal
+    resolution_actions: List[str]

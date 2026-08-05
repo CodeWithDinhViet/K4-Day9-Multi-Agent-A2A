@@ -16,7 +16,9 @@ def inspect_case(case_path: Path, repository: OlistRepository) -> None:
             f"{case.case_id}: unsupported policy {case.policy_version!r}"
         )
 
-    bundle = InvestigationCoordinator(repository).investigate(case)
+    coordinator = InvestigationCoordinator(repository)
+    bundle = coordinator.investigate(case)
+    decision = coordinator.decide(bundle)
     order = bundle.order_product.order
 
     print(f"case_id={case.case_id}")
@@ -31,6 +33,11 @@ def inspect_case(case_path: Path, repository: OlistRepository) -> None:
     print(f"reconciled={bundle.payment.reconciled}")
     print(f"delivery_variance_hours={bundle.delivery.delivery_variance_hours}")
     print(f"late_handoff_sellers={len(bundle.delivery.late_handoff_seller_ids)}")
+    print(f"primary_issue={decision.primary_issue}")
+    print(f"secondary_issues={','.join(decision.secondary_issues)}")
+    print(f"responsible_parties={len(decision.responsible_parties)}")
+    print(f"recommended_refund_brl={decision.recommended_refund_brl}")
+    print(f"resolution_actions={','.join(decision.resolution_actions)}")
 
 
 def build_parser() -> argparse.ArgumentParser:
