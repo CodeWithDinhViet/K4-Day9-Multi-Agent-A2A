@@ -105,7 +105,7 @@ class PolicyAgent:
             actions.append("review_seller_handoff")
         elif primary_issue == "late_delivery_logistics":
             actions.append("review_carrier_delay")
-        if refund > ZERO:
+        if primary_issue in {"canceled_order_paid", "unavailable_order_paid"}:
             actions.append("verify_refund_completion")
         if bundle.order_product.multi_seller_order:
             actions.append("coordinate_multi_seller_case")

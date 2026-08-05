@@ -194,14 +194,15 @@ class VerifierAgent:
             return
         payment = output.get("payment_reconciliation", {})
         for field in (
-            "item_total_brl",
-            "freight_total_brl",
             "expected_total_brl",
             "difference_brl",
             "reconciled",
         ):
             if payment.get(field) is not None:
                 errors.append(f"{field} must be null when the order has no items")
+        for field in ("item_total_brl", "freight_total_brl"):
+            if payment.get(field) != 0.0:
+                errors.append(f"{field} must be 0.0 when the order has no items")
         entities = output.get("affected_entities", {})
         product = output.get("product_context", {})
         delivery = output.get("delivery_analysis", {})

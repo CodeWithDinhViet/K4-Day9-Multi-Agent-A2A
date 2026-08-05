@@ -50,13 +50,13 @@ class PipelineTest(unittest.TestCase):
             payment = output["payment_reconciliation"]
             if not bundle.order_product.item_rows:
                 for field in (
-                    "item_total_brl",
-                    "freight_total_brl",
                     "expected_total_brl",
                     "difference_brl",
                     "reconciled",
                 ):
                     self.assertIsNone(payment[field])
+                self.assertEqual(payment["item_total_brl"], 0.0)
+                self.assertEqual(payment["freight_total_brl"], 0.0)
                 continue
             expected = Decimal(str(payment["item_total_brl"])) + Decimal(
                 str(payment["freight_total_brl"])

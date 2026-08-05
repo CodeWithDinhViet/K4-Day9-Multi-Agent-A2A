@@ -63,7 +63,7 @@ def build_output(
             "primary_issue": decision.primary_issue,
             "secondary_issues": decision.secondary_issues,
             "case_status": decision.case_status,
-            "confidence": 1.0,
+            "confidence": 0.92,
         },
         "affected_entities": {
             "order_ids": [order_id],

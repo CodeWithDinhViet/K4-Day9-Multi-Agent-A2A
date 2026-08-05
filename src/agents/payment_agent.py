@@ -33,8 +33,8 @@ class PaymentAgent:
         if not items:
             return PaymentAnalysis(
                 payment_rows=payments,
-                item_total_brl=None,
-                freight_total_brl=None,
+                item_total_brl=money(Decimal("0")),
+                freight_total_brl=money(Decimal("0")),
                 expected_total_brl=None,
                 payment_total_brl=payment_total,
                 difference_brl=None,
@@ -58,4 +58,3 @@ class PaymentAgent:
             payment_types=payment_types,
             split_payment=len(payments) >= 2,
         )
-
