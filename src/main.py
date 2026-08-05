@@ -1,12 +1,14 @@
 """Command-line entry point for inspecting the project data foundation."""
 
 import argparse
+import json
 from pathlib import Path
 from typing import Sequence
 
 from .config import INPUT_DIR, POLICY_VERSION
 from .data_repository import OlistRepository, load_case
 from .orchestrator import InvestigationCoordinator
+from .output_builder import build_output
 
 
 def inspect_case(case_path: Path, repository: OlistRepository) -> None:
@@ -19,6 +21,7 @@ def inspect_case(case_path: Path, repository: OlistRepository) -> None:
     coordinator = InvestigationCoordinator(repository)
     bundle = coordinator.investigate(case)
     decision = coordinator.decide(bundle)
+    output = build_output(bundle, decision)
     order = bundle.order_product.order
 
     print(f"case_id={case.case_id}")
@@ -38,6 +41,8 @@ def inspect_case(case_path: Path, repository: OlistRepository) -> None:
     print(f"responsible_parties={len(decision.responsible_parties)}")
     print(f"recommended_refund_brl={decision.recommended_refund_brl}")
     print(f"resolution_actions={','.join(decision.resolution_actions)}")
+    if args.json:
+        print(json.dumps(output, ensure_ascii=False, indent=2))
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -46,6 +51,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--case",
         default="EC_001",
         help="Case ID to inspect without the .json suffix (default: EC_001)",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print the complete submission-shaped JSON after the summary",
     )
     return parser
 
