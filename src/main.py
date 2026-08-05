@@ -9,9 +9,15 @@ from .config import INPUT_DIR, POLICY_VERSION
 from .data_repository import OlistRepository, load_case
 from .orchestrator import InvestigationCoordinator
 from .output_builder import build_output
+from .runner import run_all_cases, write_output
 
 
-def inspect_case(case_path: Path, repository: OlistRepository) -> None:
+def inspect_case(
+    case_path: Path,
+    repository: OlistRepository,
+    show_json: bool = False,
+    write: bool = False,
+) -> None:
     case = load_case(case_path)
     if case.policy_version != POLICY_VERSION:
         raise ValueError(
@@ -42,8 +48,10 @@ def inspect_case(case_path: Path, repository: OlistRepository) -> None:
     print(f"responsible_parties={len(decision.responsible_parties)}")
     print(f"recommended_refund_brl={decision.recommended_refund_brl}")
     print(f"resolution_actions={','.join(decision.resolution_actions)}")
-    if args.json:
+    if show_json:
         print(json.dumps(output, ensure_ascii=False, indent=2))
+    if write:
+        print(f"output_written={write_output(output)}")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -58,13 +66,32 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Print the complete submission-shaped JSON after the summary",
     )
+    parser.add_argument(
+        "--write",
+        action="store_true",
+        help="Write the selected case after successful verification",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Verify and write EC_001 through EC_050",
+    )
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.all:
+        destinations = run_all_cases()
+        print(f"verified_outputs_written={len(destinations)}")
+        return 0
     repository = OlistRepository()
-    inspect_case(INPUT_DIR / f"{args.case}.json", repository)
+    inspect_case(
+        INPUT_DIR / f"{args.case}.json",
+        repository,
+        show_json=args.json,
+        write=args.write,
+    )
     return 0
 
 
